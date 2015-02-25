@@ -2,14 +2,18 @@
  * Exchange between messages between mpirank
  * 0 <-> 1, 2 <-> 3, ....
  */
-
 #include <stdio.h>
+#include <unistd.h>
 #include <mpi.h>
 
 int main( int argc, char *argv[])
 {
   int rank, tag, origin, destination;
   MPI_Status status;
+
+  char hostname[1024];
+  gethostname(hostname, 1024);
+
   MPI_Init(&argc, &argv);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
@@ -34,7 +38,7 @@ int main( int argc, char *argv[])
     MPI_Send(&message_out, 1, MPI_INT, destination, tag, MPI_COMM_WORLD);
   }
 
-  printf("rank %d received from %d the message %d\n", rank, origin, message_in);
+  printf("rank %d hosted on %s received from %d the message %d\n", rank, hostname, origin, message_in);
 
   MPI_Finalize();
   return 0;
